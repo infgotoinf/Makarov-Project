@@ -22,12 +22,39 @@ int main(void)
     camera.fovy = 45.0f;                                // Camera field-of-view Y
     camera.projection = CAMERA_PERSPECTIVE;             // Camera mode type
 
+
+    int is_in_main_menu = 1;
+    int starts_the_game = 0;
+
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
+
+        if (is_in_main_menu)
+        {
+            BeginDrawing();
+
+                ClearBackground(RAYWHITE);
+
+                DrawText("Congrats! You created your first window!"
+                       , screenWidth/2, screenHeight/2 + 20, 20, GOLD);
+
+                starts_the_game = GuiButton(
+                        (Rectangle){screenWidth/2, screenHeight/2 - 20, 160, 40}, "PLAY");
+
+            EndDrawing();
+
+            if (starts_the_game)
+            {
+                is_in_main_menu = 0;
+            }
+            
+            continue;
+        }
+        
         // Update
         //---------------------------------------------------------------------------------
 
@@ -66,8 +93,6 @@ int main(void)
                 DrawGrid(10, 1.0f);
 
             EndMode3D();
-
-            // DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
 
             pos = GetMousePosition();
             static float size = 5.0f;
