@@ -24,7 +24,7 @@ int main(void)
 
 
     int is_in_main_menu = 1;
-    int starts_the_game = 0;
+    int is_in_game = 0;
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
@@ -35,19 +35,26 @@ int main(void)
 
         if (is_in_main_menu)
         {
+            
+            
             BeginDrawing();
 
                 ClearBackground(RAYWHITE);
 
-                DrawText("Congrats! You created your first window!"
-                       , screenWidth/2, screenHeight/2 + 20, 20, GOLD);
+                DrawText("Wecome to the game!"
+                       , screenWidth/2, screenHeight/2 - 20, 20, GOLD);
 
-                starts_the_game = GuiButton(
-                        (Rectangle){screenWidth/2, screenHeight/2 - 20, 160, 40}, "PLAY");
+                DrawText("Press ENTER to play"
+                       , screenWidth/2, screenHeight/2 + 20, 20, GRAY);
 
             EndDrawing();
 
-            if (starts_the_game)
+            if (IsKeyPressed(KEY_ENTER))
+            {
+                is_in_game = 1;
+            }
+
+            if (is_in_game)
             {
                 is_in_main_menu = 0;
             }
