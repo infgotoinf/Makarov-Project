@@ -1,20 +1,24 @@
 cmake_minimum_required(VERSION 3.23)
 
-project(MyProjectName)
+project(MakarovProject)
 
 add_executable(game)
 
 target_sources(game
   PRIVATE
     main/main.c
+    main/main_menu.c
 
   PUBLIC
     FILE_SET raylib_headers
     TYPE HEADERS
     BASE_DIRS
       external/raylib-5.5/src
+      main/include
     FILES
       external/raylib-5.5/src/raylib.h
+      main/include/window_codes.h
+      main/include/main_menu.h
 )
 
 target_link_libraries(game
