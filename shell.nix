@@ -21,9 +21,7 @@ pkgs.mkShell {
   ];
 
   shellHook = ''
-    zsh
     export CMAKE_GENERATOR=Ninja
-    export CMAKE_BUILD_TYPE=Debug
   '';
 
   # Audio dependencies
