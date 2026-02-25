@@ -1,5 +1,23 @@
 #include "raylib.h"
 
+#include "include/window_codes.h"
+#include "include/main_menu.h"
+
+
+void DrawCustomCursor()
+{
+    float screen_width = GetRenderWidth();
+    float screen_height = GetRenderHeight();
+
+    float cursor_size = 5.0f;
+    DrawRectangle((screen_width + cursor_size)/2,
+                  (screen_height + cursor_size)/2,
+                  cursor_size - 1, cursor_size - 1, BLACK);
+    DrawRectangleLines((screen_width + cursor_size)/2,
+                       (screen_height + cursor_size)/2,
+                       cursor_size, cursor_size, WHITE);
+}
+
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
@@ -7,105 +25,94 @@ int main(void)
 {
     // Initialization
     //--------------------------------------------------------------------------------------
-    const int screenWidth = 800;
-    const int screenHeight = 450;
+    int screen_width = 800;
+    int screen_height = 450;
 
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+    InitWindow(screen_width, screen_height, "raylib [core] example - basic window");
     HideCursor();
     
-    Vector2 pos;
-
     Camera3D camera = { 0 };
-    camera.position = (Vector3){ 0.0f, 10.0f, 10.0f };  // Camera position
+    camera.position = (Vector3){ 0.0f, 2.0f, 10.0f };  // Camera position
     camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };      // Camera looking at point
     camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
-    camera.fovy = 45.0f;                                // Camera field-of-view Y
+    camera.fovy = 75.0f;                                // Camera field-of-view Y
     camera.projection = CAMERA_PERSPECTIVE;             // Camera mode type
 
+    int camera_mode = CAMERA_FIRST_PERSON;
 
-    int is_in_main_menu = 1;
-    int is_in_game = 0;
+    float step = 0.5f;
+    int current_window = MAIN_MENU_CODE;
 
+    DisableCursor();
+    
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
 
     // Main game loop
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
+        screen_width = GetRenderWidth();
+        screen_height = GetRenderHeight();
 
-        if (is_in_main_menu)
+        if (current_window == MAIN_MENU_CODE)
         {
-            
-            
-            BeginDrawing();
-
-                ClearBackground(RAYWHITE);
-
-                DrawText("Wecome to the game!"
-                       , screenWidth/2, screenHeight/2 - 20, 20, GOLD);
-
-                DrawText("Press ENTER to play"
-                       , screenWidth/2, screenHeight/2 + 20, 20, GRAY);
-
-            EndDrawing();
-
-            if (IsKeyPressed(KEY_ENTER))
-            {
-                is_in_game = 1;
-            }
-
-            if (is_in_game)
-            {
-                is_in_main_menu = 0;
-            }
-            
+            current_window = DrawMainMenu();
             continue;
         }
         
         // Update
         //---------------------------------------------------------------------------------
 
-        if (IsKeyDown(KEY_S))
-        {
-            camera.position.y -= 1;
-        }
+        // if (IsKeyDown(KEY_S))
+        // {
+        //     camera.position.x += step;
+        // }
 
-        if (IsKeyDown(KEY_W))
-        {
-            camera.position.y += 1;
-        }
+        // if (IsKeyDown(KEY_W))
+        // {
+        //     camera.position.x -= step;
+        // }
 
-        if (IsKeyDown(KEY_A))
-        {
-            camera.position.x -= 1;
-        }
+        // if (IsKeyDown(KEY_A))
+        // {
+        //     camera.position.z += step;
+        // }
 
-        if (IsKeyDown(KEY_D))
-        {
-            camera.position.x += 1;
-        }
+        // if (IsKeyDown(KEY_D))
+        // {
+        //     camera.position.z -= step;
+        // }
+        
+        UpdateCamera(&camera, camera_mode);            
         
         // Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
-            ClearBackground(RAYWHITE);
+            ClearBackground(DARKGRAY);
 
             BeginMode3D(camera);
             
-                static Vector3 cubePosition = { 0.0f, 0.0f, 0.0f };
-                DrawCube(cubePosition, 2.0f, 2.0f, 2.0f, RED);
-                DrawCubeWires(cubePosition, 2.0f, 2.0f, 2.0f, MAROON);
+                static Vector3 cube_position = { 0.0f, 0.0f, 0.0f };
+                DrawCube(cube_position, 2.0f, 2.0f, 2.0f, RED);
+                // DrawCubeWires(cubePosition, 2.0f, 2.0f, 2.0f, MAROON);
 
-                DrawGrid(10, 1.0f);
+                DrawGrid(20, 1.0f);
 
             EndMode3D();
 
-            pos = GetMousePosition();
-            static float size = 5.0f;
-            DrawRectangle(pos.x, pos.y, size-1, size-1, BLACK);
-            DrawRectangleLines(pos.x, pos.y, size, size, WHITE);
+            DrawFPS(10, 10);
+            DrawText(TextFormat("- Screen Width: %i", screen_width), 30, 30, 20, WHITE);
+            DrawText(TextFormat("- Screen Height: %i", screen_height), 30, 60, 20, WHITE);
+            DrawText(TextFormat("- Position: (%06.3f, %06.3f, %06.3f)", camera.position.x, camera.position.y, camera.position.z)
+                   , 30, 90, 20, WHITE);
+            DrawText(TextFormat("- Target: (%06.3f, %06.3f, %06.3f)", camera.target.x, camera.target.y, camera.target.z)
+                   , 30, 120, 20, WHITE);
+            DrawText(TextFormat("- Up: (%06.3f, %06.3f, %06.3f)", camera.up.x, camera.up.y, camera.up.z)
+                   , 30, 150, 20, WHITE);
 
+            DrawCustomCursor();
+            
         EndDrawing();
     }
 
