@@ -21,8 +21,9 @@ pkgs.mkShell {
   ];
 
   shellHook = ''
-    export CMAKE_GENERATOR=Ninja
   '';
+
+  CMAKE_GENERATOR = "Ninja";
 
   # Audio dependencies
   LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [pkgs.alsa-lib];
